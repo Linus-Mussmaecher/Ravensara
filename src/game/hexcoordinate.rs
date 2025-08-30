@@ -5,7 +5,7 @@ pub struct HexCoordinate {
     pub y: i32,
 }
 
-const HEX_SIZE: i32 = 64;
+const HEX_SIZE: i32 = 128;
 
 impl HexCoordinate {
     /// Creates a new coordinate.
@@ -57,8 +57,8 @@ impl HexCoordinate {
     /// Converts this hex coordinate to pixels.
     pub fn to_pixels(&self) -> (f32, f32) {
         (
-            (self.x * 64 + if self.y % 2 == 1 { 32 } else { 0 }) as f32,
-            (self.y * 48) as f32,
+            (self.x * HEX_SIZE + if self.y % 2 == 1 { HEX_SIZE / 2 } else { 0 }) as f32,
+            (self.y * HEX_SIZE * 3 / 4) as f32,
         )
     }
 }

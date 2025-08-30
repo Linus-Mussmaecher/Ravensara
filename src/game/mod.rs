@@ -27,9 +27,9 @@ impl Game {
 impl Scene for Game {
     fn update(&mut self) -> crate::scene::SceneSwitch {
         if input::is_key_down(input::KeyCode::Q) {
-            crate::scene::SceneSwitch::Pop(1)
+            crate::scene::SceneSwitch::pop(1)
         } else {
-            crate::scene::SceneSwitch::None
+            crate::scene::SceneSwitch::none()
         }
     }
 

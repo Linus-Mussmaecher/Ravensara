@@ -26,11 +26,16 @@ impl Tile {
 
     pub fn draw(&self) {
         let (x_pix, y_pix) = self.pos.to_pixels();
-        draw_texture(
+        self.sprite.set_filter(FilterMode::Nearest);
+        draw_texture_ex(
             &self.sprite,
             x_pix,
             y_pix,
             Color::new(1f32, 1f32, 1f32, 1f32),
+            DrawTextureParams {
+                dest_size: Some(vec2(128.0, 128.0)),
+                ..Default::default()
+            },
         );
     }
 }
