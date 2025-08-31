@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use super::Tile;
 
 #[derive(Debug)]
@@ -12,9 +10,9 @@ impl GameState {
     /// Creates a new game state initialized randomly.
     pub fn new() -> Self {
         let mut tiles = Vec::new();
-        for y in 0..20 {
+        for _y in 0..20 {
             let mut row = Vec::new();
-            for x in 0..20 {
+            for _x in 0..20 {
                 row.push(Tile::new());
             }
             tiles.push(row);

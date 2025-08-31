@@ -84,21 +84,25 @@ pub enum SceneSwitch {
 
 impl SceneSwitch {
     /// Creates an instance of [SceneSwitch::None].
+    #[allow(dead_code)]
     pub fn none() -> Self {
         Self::None
     }
 
     /// Creates an instance of [SceneSwitch::Push], handling the boxing for you.
+    #[allow(dead_code)]
     pub fn push(scene: impl Scene + 'static) -> Self {
         Self::Push(Box::new(scene))
     }
 
     /// Creates an instance of [SceneSwitch::Pop].
+    #[allow(dead_code)]
     pub fn pop(pop_amount: u32) -> Self {
         Self::Pop(pop_amount)
     }
 
     /// Creates an instance of [SceneSwitch::Replace], handling the boxing for you.
+    #[allow(dead_code)]
     pub fn replace(scene: impl Scene + 'static, pop_amount: u32) -> Self {
         Self::Replace(pop_amount, Box::new(scene))
     }
