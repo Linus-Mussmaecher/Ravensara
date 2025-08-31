@@ -1,26 +1,43 @@
-use super::HexCoordinate;
+use std::collections::HashMap;
+
 use super::Tile;
 
 #[derive(Debug)]
 pub struct GameState {
-    tiles: Vec<Tile>,
+    tiles: Vec<Vec<Tile>>,
+    selected: Option<(usize, usize)>,
 }
 
 impl GameState {
     /// Creates a new game state initialized randomly.
     pub fn new() -> Self {
-        let mut test_vec = Vec::new();
+        let mut tiles = Vec::new();
         for y in 0..20 {
+            let mut row = Vec::new();
             for x in 0..20 {
-                test_vec.push(Tile::new(HexCoordinate::new(x, y)));
+                row.push(Tile::new());
             }
+            tiles.push(row);
         }
-        Self { tiles: test_vec }
+        Self {
+            tiles,
+            selected: Some((2, 2)),
+        }
     }
 
     pub fn draw(&self) {
-        for tile in &self.tiles {
-            tile.draw();
+        for (y, row) in self.tiles.iter().enumerate() {
+            for (x, tile) in row.iter().enumerate() {
+                tile.draw(
+                    x,
+                    y,
+                    self.selected.map(|sel| sel == (x, y)).unwrap_or(false),
+                );
+            }
         }
+    }
+
+    pub fn select(&mut self, hex_x: usize, hex_y: usize) {
+        self.selected = Some((hex_x, hex_y));
     }
 }

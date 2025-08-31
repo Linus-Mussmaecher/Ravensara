@@ -2,11 +2,14 @@ mod gamestate;
 pub use gamestate::GameState;
 
 mod hexcoordinate;
-pub use hexcoordinate::HexCoordinate;
+pub use hexcoordinate::adjacent;
+pub use hexcoordinate::get_adjacents;
+pub use hexcoordinate::to_pixels;
 
 mod tile;
 use macroquad::input;
 use macroquad::prelude::*;
+use macroquad::ui;
 pub use tile::Tile;
 
 use crate::scene::Scene;
@@ -20,14 +23,9 @@ pub struct Game {
 impl Game {
     /// Creates a new game with n players and random map.
     pub fn new(players: u8) -> Self {
-        let camera = Camera2D {
-            target: vec2(0.0, 0.0),
-            zoom: vec2(0.01, 0.01),
-            ..Default::default()
-        };
         Self {
             game_state: GameState::new(),
-            camera,
+            camera: Default::default(),
         }
     }
 }
@@ -61,6 +59,8 @@ impl Scene for Game {
             self.camera.target.x += CAMERA_SPEED;
         }
 
+        // === QUITTING ===
+
         if input::is_key_down(input::KeyCode::Q) {
             crate::scene::SceneSwitch::pop(1)
         } else {
@@ -74,5 +74,10 @@ impl Scene for Game {
         self.game_state.draw();
 
         set_default_camera();
+
+        if ui::root_ui().button(vec2(10.0, 10.0), "Click me!") {
+            self.game_state
+                .select(rand::rand() as usize % 5, rand::rand() as usize % 5);
+        }
     }
 }
