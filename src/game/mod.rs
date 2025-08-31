@@ -1,23 +1,33 @@
 mod gamestate;
 pub use gamestate::GameState;
+pub use gamestate::TileGrid;
 
 mod hexcoordinate;
 
 mod tile;
+use macroquad::ui::widgets;
+pub use tile::Tile;
+
+mod tile_type;
+pub use tile_type::TileType;
+
 use macroquad::input;
 use macroquad::prelude::*;
 use macroquad::ui;
-pub use tile::Tile;
 
 use super::sprite_manager;
 
 use super::scene_manager;
+
+type Player = usize;
 
 #[derive(Debug)]
 pub struct Game {
     game_state: GameState,
     sprite_manager: sprite_manager::SpriteManager,
     camera: Camera2D,
+    selected: Option<(usize, usize)>,
+    player: Player,
 }
 
 impl Game {
@@ -27,6 +37,8 @@ impl Game {
             game_state: GameState::new(),
             camera: Default::default(),
             sprite_manager: sprite_manager::SpriteManager::new(),
+            selected: None,
+            player: 0,
         }
     }
 }
@@ -79,7 +91,7 @@ impl scene_manager::Scene for Game {
                 self.game_state.width(),
                 self.game_state.height(),
             ) {
-                self.game_state.select(x, y);
+                self.selected = Some((x, y));
             }
         }
 
@@ -95,13 +107,16 @@ impl scene_manager::Scene for Game {
     fn draw(&mut self, _mouse_listen: bool) {
         set_camera(&self.camera);
 
-        self.game_state.draw(&mut self.sprite_manager);
+        self.game_state
+            .draw(&mut self.sprite_manager, self.selected);
 
         set_default_camera();
 
-        if ui::root_ui().button(vec2(10.0, 10.0), "Click me!") {
-            self.game_state
-                .select(rand::rand() as usize % 5, rand::rand() as usize % 5);
+        if let Some(tile) = self
+            .selected
+            .and_then(|(x, y)| self.game_state.get_tile_mut(x, y))
+        {
+            tile.build_ui(self.player, ui::root_ui());
         }
     }
 }
