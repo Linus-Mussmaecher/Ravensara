@@ -41,11 +41,38 @@ pub fn get_adjacents(x: usize, y: usize) -> [(usize, usize); 6] {
     }
 }
 
-/// Converts this hex coordinate to pixels.
-#[allow(dead_code)]
-pub fn to_pixels(x: usize, y: usize) -> (f32, f32) {
+/// Converts this hex coordinate to the top right of its position in the world.
+pub fn to_world(x: usize, y: usize) -> (f32, f32) {
     (
         (x as f32 * HEX_SIZE + if y % 2 == 1 { HEX_SIZE * 0.5 } else { 0. }),
         (y as f32 * HEX_SIZE * 0.75),
     )
+}
+
+/// Converts a world location to a hex coordinate in the grid.
+pub fn from_world(
+    x_world: f32,
+    y_world: f32,
+    width: usize,
+    height: usize,
+) -> Option<(usize, usize)> {
+    if y_world < 0.0 {
+        return None;
+    }
+    let y = (y_world / 0.75).floor() as usize;
+
+    // correct for the fact that every second row is offset.
+    let x_cor = if y % 2 == 1 { x_world - 0.5 } else { x_world };
+
+    if x_cor < 0.0 {
+        return None;
+    }
+
+    let x = x_cor.floor() as usize;
+
+    if x < width && y < height {
+        Some((x, y))
+    } else {
+        None
+    }
 }

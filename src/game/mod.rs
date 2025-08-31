@@ -19,7 +19,7 @@ pub struct Game {
 
 impl Game {
     /// Creates a new game with n players and random map.
-    pub fn new(players: u8) -> Self {
+    pub fn new(_players: u8) -> Self {
         Self {
             game_state: GameState::new(),
             camera: Default::default(),
@@ -64,6 +64,19 @@ impl Scene for Game {
 
         if input::is_mouse_button_down(input::MouseButton::Middle) {
             self.camera.target += input::mouse_delta_position() * ZOOM_FACTOR;
+        }
+
+        // selecting
+        if input::is_mouse_button_pressed(input::MouseButton::Left) {
+            let pos = self.camera.screen_to_world(input::mouse_position().into());
+            if let Some((x, y)) = hexcoordinate::from_world(
+                pos.x,
+                pos.y,
+                self.game_state.width(),
+                self.game_state.height(),
+            ) {
+                self.game_state.select(x, y);
+            }
         }
 
         // === QUITTING ===

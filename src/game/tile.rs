@@ -23,7 +23,7 @@ impl Tile {
     }
 
     pub fn draw(&self, hex_x: usize, hex_y: usize, selected: bool) {
-        let (x_pix, y_pix) = hexcoordinate::to_pixels(hex_x, hex_y);
+        let (x_pix, y_pix) = hexcoordinate::to_world(hex_x, hex_y);
         self.sprite.set_filter(FilterMode::Nearest);
         draw_texture_ex(
             &self.sprite,
