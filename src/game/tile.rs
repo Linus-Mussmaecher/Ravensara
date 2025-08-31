@@ -1,3 +1,5 @@
+use crate::sprite_manager;
+
 use super::hexcoordinate;
 use macroquad::prelude::*;
 
@@ -5,28 +7,31 @@ use macroquad::prelude::*;
 /// A hexagonal tile in the game world.
 pub struct Tile {
     /// The sprite displayed to represent this tile.
-    sprite: Texture2D,
+    sprite_key: String,
 }
 
 impl Tile {
     pub fn new() -> Self {
         Self {
-            sprite: Texture2D::from_file_with_format(
-                if rand::rand() % 3 == 0 {
-                    include_bytes!("../../resources/sprites/house.png")
-                } else {
-                    include_bytes!("../../resources/sprites/forest.png")
-                },
-                Some(ImageFormat::Png),
-            ),
+            sprite_key: if rand::rand() % 3 == 0 {
+                "house"
+            } else {
+                "forest"
+            }
+            .to_owned(),
         }
     }
 
-    pub fn draw(&self, hex_x: usize, hex_y: usize, selected: bool) {
+    pub fn draw(
+        &self,
+        sprite_manager: &mut sprite_manager::SpriteManager,
+        hex_x: usize,
+        hex_y: usize,
+        selected: bool,
+    ) {
         let (x_pix, y_pix) = hexcoordinate::to_world(hex_x, hex_y);
-        self.sprite.set_filter(FilterMode::Nearest);
         draw_texture_ex(
-            &self.sprite,
+            sprite_manager.get_sprite(&self.sprite_key),
             x_pix,
             y_pix
                 - if selected {

@@ -9,11 +9,14 @@ use macroquad::prelude::*;
 use macroquad::ui;
 pub use tile::Tile;
 
-use crate::scene::Scene;
+use super::sprite_manager;
+
+use super::scene_manager;
 
 #[derive(Debug)]
 pub struct Game {
     game_state: GameState,
+    sprite_manager: sprite_manager::SpriteManager,
     camera: Camera2D,
 }
 
@@ -23,6 +26,7 @@ impl Game {
         Self {
             game_state: GameState::new(),
             camera: Default::default(),
+            sprite_manager: sprite_manager::SpriteManager::new(),
         }
     }
 }
@@ -32,8 +36,8 @@ const EDGE_SCROLL_THRESHOLD: f32 = 0.99;
 const EDGE_SCROLL: bool = false;
 const ZOOM_FACTOR: f32 = 6.;
 
-impl Scene for Game {
-    fn update(&mut self) -> crate::scene::SceneSwitch {
+impl scene_manager::Scene for Game {
+    fn update(&mut self) -> scene_manager::SceneSwitch {
         // === CAMERA ===
         self.camera.zoom = vec2(
             1. / ZOOM_FACTOR,
@@ -82,16 +86,16 @@ impl Scene for Game {
         // === QUITTING ===
 
         if input::is_key_down(input::KeyCode::Q) {
-            crate::scene::SceneSwitch::pop(1)
+            scene_manager::SceneSwitch::pop(1)
         } else {
-            crate::scene::SceneSwitch::none()
+            scene_manager::SceneSwitch::none()
         }
     }
 
     fn draw(&mut self, _mouse_listen: bool) {
         set_camera(&self.camera);
 
-        self.game_state.draw();
+        self.game_state.draw(&mut self.sprite_manager);
 
         set_default_camera();
 

@@ -1,3 +1,5 @@
+use crate::sprite_manager;
+
 use super::Tile;
 
 #[derive(Debug)]
@@ -23,10 +25,11 @@ impl GameState {
         }
     }
 
-    pub fn draw(&self) {
+    pub fn draw(&self, sprite_manager: &mut sprite_manager::SpriteManager) {
         for (y, row) in self.tiles.iter().enumerate() {
             for (x, tile) in row.iter().enumerate() {
                 tile.draw(
+                    sprite_manager,
                     x,
                     y,
                     self.selected.map(|sel| sel == (x, y)).unwrap_or(false),
