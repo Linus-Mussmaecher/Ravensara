@@ -33,7 +33,10 @@ impl Tile {
             y_pix,
             Color::new(1f32, 1f32, 1f32, 1f32),
             DrawTextureParams {
-                dest_size: Some(vec2(128.0, 128.0)),
+                dest_size: Some(vec2(
+                    crate::game::hexcoordinate::HEX_SIZE,
+                    crate::game::hexcoordinate::HEX_SIZE,
+                )),
                 ..Default::default()
             },
         );

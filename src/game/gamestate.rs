@@ -1,7 +1,7 @@
 use super::HexCoordinate;
 use super::Tile;
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct GameState {
     tiles: Vec<Tile>,
 }
