@@ -6,6 +6,7 @@ use super::sprite_manager;
 use super::hexcoordinate;
 use macroquad::prelude::*;
 use macroquad::ui;
+use macroquad::ui::hash;
 
 #[derive(Debug, Clone, Hash)]
 /// A hexagonal tile in the game world.
@@ -69,22 +70,68 @@ impl Tile {
         player: super::Player,
         mut ui: impl DerefMut<Target = macroquad::ui::Ui>,
     ) {
-        ui::widgets::Group::new(0, vec2(512.0, 256.0)).ui(ui.deref_mut(), |ui| {
-            ui.button(vec2(256.0, 50.0), self.tile_type.name());
+        ui.window(
+            ui::hash!(&self),
+            vec2(screen_width() - 3. * 128., screen_height() - 3. * 80.),
+            vec2(3. * 128., 3. * 80.),
+            |ui| {
+                // Type
+                ui::widgets::Label::new(self.tile_type.name())
+                    .position(vec2(90., 9.))
+                    .size(vec2(290., 30.))
+                    .ui(ui);
 
-            ui.button(
-                vec2(256.0, 20.0),
-                format!("Capacity: {}", self.tile_type.capacity()),
-            );
+                // Terrain
+                ui::widgets::Label::new(format!("{}", self.tile_type.terrain()))
+                    .position(vec2(50., 56.))
+                    .size(vec2(42., 30.))
+                    .ui(ui);
 
-            if self
-                .controller
-                .is_some_and(|controller| controller == player)
-            {
-                if ui.button(vec2(256.0, 40.), "Upgrade") {
-                    self.tile_type = crate::game::TileType::HOUSE
-                }
-            }
-        });
+                // Defense
+                ui::widgets::Label::new(format!("{}", self.tile_type.defense()))
+                    .position(vec2(146., 56.))
+                    .size(vec2(42., 30.))
+                    .ui(ui);
+
+                // Units
+                ui::widgets::Label::new(format!("{} / {}", self.units, self.tile_type.capacity()))
+                    .position(vec2(242., 56.))
+                    .size(vec2(120., 30.))
+                    .ui(ui);
+
+                // Food
+                ui::widgets::Label::new(format!("{}", self.tile_type.food()))
+                    .position(vec2(50., 104.))
+                    .size(vec2(42., 30.))
+                    .ui(ui);
+
+                // Materials
+                ui::widgets::Label::new(format!("{}", self.tile_type.material()))
+                    .position(vec2(146., 104.))
+                    .size(vec2(42., 30.))
+                    .ui(ui);
+
+                // Funds
+                ui::widgets::Label::new(format!("{}", self.tile_type.funds()))
+                    .position(vec2(242., 104.))
+                    .size(vec2(42., 30.))
+                    .ui(ui);
+
+                // Unit Production
+                ui::widgets::Label::new(format!("{}", self.tile_type.units()))
+                    .position(vec2(338., 104.))
+                    .size(vec2(42., 30.))
+                    .ui(ui);
+
+                // if self
+                //     .controller
+                //     .is_some_and(|controller| controller == player)
+                // {
+                //     if ui.button(vec2(256.0, 40.), "Upgrade") {
+                //         self.tile_type = crate::game::TileType::HOUSE
+                //     }
+                // }
+            },
+        );
     }
 }

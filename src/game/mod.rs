@@ -46,7 +46,7 @@ impl Game {
 const CAMERA_SPEED: f32 = 0.6;
 const EDGE_SCROLL_THRESHOLD: f32 = 0.99;
 const EDGE_SCROLL: bool = false;
-const ZOOM_FACTOR: f32 = 6.;
+const ZOOM_FACTOR: f32 = 8.;
 
 impl scene_manager::Scene for Game {
     fn update(&mut self) -> scene_manager::SceneSwitch {
@@ -111,6 +111,14 @@ impl scene_manager::Scene for Game {
             .draw(&mut self.sprite_manager, self.selected);
 
         set_default_camera();
+
+        set_camera(&Camera2D {
+            zoom: vec2(
+                1. / ZOOM_FACTOR / 10.,
+                screen_width() / screen_height() / ZOOM_FACTOR / 10.,
+            ),
+            ..Default::default()
+        });
 
         if let Some(tile) = self
             .selected
