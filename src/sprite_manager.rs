@@ -14,6 +14,7 @@ impl SpriteManager {
     pub async fn new() -> Self {
         let mut skins = HashMap::new();
         skins.insert("tile-info".to_owned(), skins::tile_info().await);
+        skins.insert("resource-info".to_owned(), skins::resource_info().await);
         for upgrade in ["House", "Plains", "Trench"] {
             skins.insert(
                 format!("upgrade-{}", upgrade),

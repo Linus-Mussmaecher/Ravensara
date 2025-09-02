@@ -15,6 +15,7 @@ pub use tile_type::TileType;
 use macroquad::input;
 use macroquad::prelude::*;
 use macroquad::ui;
+use macroquad::ui::hash;
 
 use super::sprite_manager;
 
@@ -71,17 +72,59 @@ impl scene_manager::Scene for Game {
         // UI
 
         let mut ui_interaction = false;
+        let mut ui = ui::root_ui();
 
+        // Tile info
         if let Some(tile) = self
             .selected
             .and_then(|(x, y)| self.game_state.get_tile_mut(x, y))
         {
-            ui_interaction |= tile.build_ui(
-                self.player,
-                ui::root_ui().deref_mut(),
-                &mut self.sprite_manager,
+            ui_interaction |= tile.build_ui(self.player, ui.deref_mut(), &mut self.sprite_manager);
+
+            // Resource info
+            ui.push_skin(self.sprite_manager.get_skin("resource-info"));
+
+            ui.window(
+                ui::hash!(),
+                vec2(0., screen_height() - 3. * 32.),
+                vec2(3. * 128., 3. * 32.),
+                |ui_inner| {
+                    // Type
+                    ui::widgets::Label::new("Resources")
+                        .position(vec2(0., 9.))
+                        .size(vec2(290., 30.))
+                        .ui(ui_inner);
+
+                    // Food
+                    ui::widgets::Label::new(format!("{}", 345))
+                        .position(vec2(50., 56.))
+                        .size(vec2(42., 30.))
+                        .ui(ui_inner);
+
+                    // Materials
+                    ui::widgets::Label::new(format!("{}", 218))
+                        .position(vec2(146., 56.))
+                        .size(vec2(42., 30.))
+                        .ui(ui_inner);
+
+                    // Funds
+                    ui::widgets::Label::new(format!("{}", 918))
+                        .position(vec2(242., 56.))
+                        .size(vec2(42., 30.))
+                        .ui(ui_inner);
+
+                    // Unit Production
+                    ui::widgets::Label::new(format!("{}", 89))
+                        .position(vec2(338., 56.))
+                        .size(vec2(42., 30.))
+                        .ui(ui_inner);
+                },
             );
+
+            ui.pop_skin();
         }
+
+        // Player info
 
         // === INPUT ===
 
