@@ -56,18 +56,6 @@ impl SceneManager {
 
         self.scene_stack.is_empty()
     }
-
-    pub fn draw(&mut self) {
-        // Clear the background (scenes should in general not clear the background, as they may be on top of other scenes)
-        clear_background(Color::from_rgba(0, 0, 0, 0));
-
-        // iterate over all elements, only the last (=top) element may listen to the mouse position for hover-related visual changes
-        let mut it = self.scene_stack.iter_mut().peekable();
-
-        while let Some(scenebox) = it.next() {
-            scenebox.draw(it.peek().is_none());
-        }
-    }
 }
 
 /// A SceneSwitch. An element of this type is returned from every scene every frame to check if the scene wants to switch to another scene.
@@ -108,13 +96,8 @@ impl SceneSwitch {
     }
 }
 
-/// A scene in your game. This is basically a wrapper of [ggez::event::EventHandler] that also returns a possible scene switch in its update function.
+/// A scene in your game.
 pub trait Scene {
-    /// A function that updates the scene and also returns if the scene is to be switched.
+    /// A function that updates and draws the scene and also returns if the scene is to be switched.
     fn update(&mut self) -> SceneSwitch;
-
-    /// A function draws and can take an additional parameter that manages wether or not the scene reacts to the mouse (as in, tooltips show and visuals may show on hover).
-    /// In general, you should NOT clear the background when drawing your scene, as it may be on top of other scenes that also need to be drawn.
-    /// If you want those scenes to remain hidden, clear the background.
-    fn draw(&mut self, mouse_listen: bool);
 }

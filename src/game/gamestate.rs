@@ -16,11 +16,17 @@ impl GameState {
         for _y in 0..20 {
             let mut row = Vec::new();
             for _x in 0..20 {
-                row.push(Tile::new(super::TileType::FOREST));
+                let mut tile = Tile::new(if rand::random::<u8>() % 3 == 0 {
+                    super::TileType::FOREST
+                } else {
+                    super::TileType::PLAINS
+                });
+                tile.set_controller(0);
+
+                row.push(tile);
             }
             tiles.push(row);
         }
-        tiles[0][0].set_controller(0);
         Self { tiles }
     }
 

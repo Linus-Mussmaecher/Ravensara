@@ -1,7 +1,24 @@
 use macroquad::prelude::*;
-use macroquad::ui::{Skin, hash, root_ui, widgets};
+use macroquad::ui::{Skin, Ui, root_ui};
 
-pub async fn create_skin() -> Skin {
+pub async fn upgrade_button(tile_type: &str) -> Skin {
+    let button_style = root_ui()
+        .style_builder()
+        // todo: replace with async loading and remove unwraps
+        .background(
+            load_image(&format!("resources/ui/upgrade-button-{}.png", tile_type))
+                .await
+                .unwrap(),
+        )
+        .build();
+
+    Skin {
+        button_style,
+        ..root_ui().default_skin()
+    }
+}
+
+pub async fn tile_info() -> Skin {
     let font = load_ttf_font("./resources/PixelOperator.ttf")
         .await
         .unwrap();
